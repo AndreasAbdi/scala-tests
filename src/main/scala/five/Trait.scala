@@ -128,7 +128,7 @@ object Stream {
 
   def mapViaUnfold[A,B](as: Stream[A], f: A => B): Stream[B] = {
     unfold(as)(b => b match {
-      case Cons(head, tail) => Some((f(head), tail()))
+      case Cons(head, tail) => Some((f(head()), tail()))
       case Empty => Option.empty
     })
   }
@@ -168,13 +168,13 @@ object Stream {
           (a2(), b2())
         )
       )
-      case (Stream.empty, Cons(b1, b2)) => Some(
+      case (Empty, Cons(b1, b2)) => Some(
         (
           (Option.empty, Some(b1())),
           (Stream.empty, b2())
         )
       )
-      case (Cons(a1,a2), Stream.empty) => Some(
+      case (Cons(a1,a2), Empty) => Some(
         (
           (Some(a1()), Option.empty),
           (a2(), Stream.empty)
@@ -200,7 +200,7 @@ object Stream {
   }
 
   //?? - solution from book. weird.
-  def scanRight[A,B](as: Stream[A], z: B)(f: (A => B) => B): Stream[B] = {
+  def scanRight[A,B](as: Stream[A], z: B)(f: (A, => B) => B): Stream[B] = {
     as.foldRight((z, Stream(z)))((a, p0) => {
       // p0 is passed by-name and used in by-name args in f and cons. So use lazy val to ensure only one evaluation...
       lazy val p1 = p0
