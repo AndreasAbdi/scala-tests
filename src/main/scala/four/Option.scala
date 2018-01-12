@@ -27,6 +27,8 @@ sealed trait Option[+A] {
     case Some(a) => if (f(a)) Some(a) else None
     case None => None
   }
+
+
 }
 
 case class Some[+A](get: A) extends Option[A]

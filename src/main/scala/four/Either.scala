@@ -36,17 +36,14 @@ sealed trait Either[+E, +A] {
     es.foldRight[Either[E,List[A]]](Right(Nil))((a,b) => a.map2(b)(_::_))
   }
 
-  def traverse[E, A, B](es: List[Either[E,A]])(f: A => Either[E,B]): Either[E, List[B]] = {
+  def traverse[E, A, B](es: List[A])(f: A => Either[E,B]): Either[E, List[B]] = {
     es.foldRight[Either[E,List[B]]](Right(Nil))((a,b) => f(a).map2(b)(_::_))
   }
 }
 case class Left[+E](value: E) extends Either[E, Nothing]
 case class Right[+A](value: A) extends Either[Nothing, A]
 
-object Main {
-
-
-
+object EitherMain {
   def main(args: Array[String]): Unit = {
     println("either tests")
     var evals = new ListBuffer[Any]()
